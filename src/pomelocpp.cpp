@@ -4,8 +4,9 @@
 
 using namespace pomelo;
 
-void pomelo::LibInit()
+void pomelo::LibInit(int log_level /*= PC_LOG_DEBUG */)
 {
+    pc_lib_set_default_log_level(log_level); 
 	pc_lib_init(NULL, NULL, NULL, NULL);
 }
 
@@ -110,9 +111,10 @@ void Client::EmitEvent(const char * eventName,const char * msg)
 {
 	if(eventHandlers.find(eventName) != eventHandlers.end())
 	{
-		auto callback = eventHandlers[eventName];
-		if(callback){
-			callback(eventName,msg);
+		auto handlers = eventHandlers[eventName];
+		for(auto it = handlers.begin();it != handlers.end();it++)
+		if(*it){
+			(*it)(eventName,msg);
 		}
 	}
 }
