@@ -2,6 +2,7 @@
 #include "pomelo.h"
 #include "pomelocpp.h"
 #include "test.h"
+#include "json\json.h"
 #include <windows.h>
 
 
@@ -17,7 +18,7 @@ using namespace pomelo;
 
 int main()
 {
-	pomelo::LibInit();
+	pomelo::LibInit(PC_LOG_INFO);
 	
 	Client client;
 	PC_TEST_ASSERT(client.GetPcClient());
@@ -33,8 +34,13 @@ int main()
  
 	client.Connect("127.0.0.1",3010);
 	SLEEP(1);
-	client.DoRequest(REQ_ROUTE,REQ_MSG,
-		[&client](const Request & req,int rc,const char* resp){
+
+	Json::Value value;
+	value["name"] = "test";
+	std::string reqStr = value.toStyledString();
+
+	client.DoRequest(REQ_ROUTE,reqStr.c_str(),
+		[&client,reqStr](const Request & req,int rc,const char* resp){
 
 			PC_TEST_ASSERT(rc == PC_RC_OK);
 			PC_TEST_ASSERT(resp);
@@ -44,19 +50,23 @@ int main()
 
 			PC_TEST_ASSERT(req.Client() == &client);
 			PC_TEST_ASSERT(!strcmp(req.Route(), REQ_ROUTE));
-			PC_TEST_ASSERT(!strcmp(req.Message(), REQ_MSG));
+			PC_TEST_ASSERT(!strcmp(req.Message(), reqStr.c_str()));
 			PC_TEST_ASSERT(req.TimeOut() == Client::TIMEOUT_DEFAULT);
 	});
 
 	SLEEP(1);
 
-	client.DoNotify(NOTI_ROUTE,NOTI_MSG,
-		[&client](const Notify & notify,int rc){
+	value.clear();
+	value["content"]="test content";
+	std::string notifyStr = value.toStyledString();
+
+	client.DoNotify(NOTI_ROUTE,notifyStr.c_str(),
+		[&client,notifyStr](const Notify & notify,int rc){
 			PC_TEST_ASSERT(rc == PC_RC_OK);
 
 			PC_TEST_ASSERT(notify.Client() == &client);
 			PC_TEST_ASSERT(!strcmp(notify.Route(), NOTI_ROUTE));
-			PC_TEST_ASSERT(!strcmp(notify.Message(), NOTI_MSG));
+			PC_TEST_ASSERT(notifyStr == notify.Message());
 			PC_TEST_ASSERT(notify.TimeOut() == Client::TIMEOUT_DEFAULT);
 	});
 
