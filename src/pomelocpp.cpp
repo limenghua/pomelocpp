@@ -114,7 +114,7 @@ void Client::EmitEvent(const char * eventName,const char * msg)
 		auto handlers = eventHandlers[eventName];
 		for(auto it = handlers.begin();it != handlers.end();it++)
 		if(*it){
-			(*it)(eventName,msg);
+			(*it)(msg);
 		}
 	}
 }
