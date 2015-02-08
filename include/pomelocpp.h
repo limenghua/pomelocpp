@@ -35,6 +35,7 @@ namespace pomelo
 		* \returns .
 		*/
 		int Initialize();
+		int Initialize(const char  ip,int port);
 
 		/*! \brief 包装 libpomelo2 pc_client_cleanup()函数.
 		* \returns pc_client_cleanup().
@@ -77,7 +78,7 @@ namespace pomelo
 		* \endcode
 		*/
 		template<typename Function>
-			void AddEventHandler(const char * eventName,Function handler);
+			void AddListener(const char * eventName,Function handler);
 
 		/// 功能与AddEventHandler相同，node.js写法
 		template<typename Function>
@@ -162,7 +163,7 @@ namespace pomelo
 		int timeout;
 		int eventHandleId;
 
-		typedef std::function<void (const char * ,const char*)> EventHandleFun;
+		typedef std::function<void (const char*)> EventHandleFun;
 		typedef std::function<void (const Request & req,int,const char*)> RequestHandleFun;
 		typedef std::function<void (const Notify & notify,int rc)> NotifyHandleFun;
 		std::hash_map<std::string,std::list<EventHandleFun>> eventHandlers;
@@ -172,14 +173,14 @@ namespace pomelo
 	typedef Client Pomelo;
 
 	template<typename Function>
-		void Client::AddEventHandler(const char * eventName,Function handler)
+		void Client::AddListener(const char * eventName,Function handler)
 		{
 			eventHandlers[eventName].push_back(handler);
 		}
 	template<typename Function>
 		void Client::On(const char * eventName,Function handler)
 		{
-			AddEventHandler(eventName,handler);
+			AddListener(eventName,handler);
 		}
 
 	template<typename Function>
