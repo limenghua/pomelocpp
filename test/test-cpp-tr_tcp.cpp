@@ -27,9 +27,9 @@ int main()
     PC_TEST_ASSERT(pc_client_ex_data(client.GetPcClient()) == (void*)&client);
 	PC_TEST_ASSERT(client.State() == PC_ST_INITED);
 
-	client.AddEventHandler("connected",
-		[](const char * eventName,const char * msg){
-			std::cout<<"eventName is "<<eventName<<" 连接成功"<<std::endl;
+	client.On("connected",
+		[](const char * msg){
+			std::cout<<" 连接成功"<<std::endl;
 	});
  
 	client.Connect("127.0.0.1",3010);
