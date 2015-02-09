@@ -5,8 +5,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pomelocpp", "pomelocpp.vcxp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pomelocpp_test", "pomelocpp_test.vcxproj", "{B5D81A7A-FE9D-4FD3-9F34-BBDE1546CAF2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "chat_test", "chat_test\chat_test.vcxproj", "{C75D8F11-1CFC-4B9A-9E82-BDC25B96F1A3}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Chat", "Chat\Chat.vcxproj", "{A52E7931-CF2A-4B43-B903-A44A952EFC81}"
 EndProject
 Global
@@ -23,10 +21,6 @@ Global
 		{B5D81A7A-FE9D-4FD3-9F34-BBDE1546CAF2}.Debug|Win32.Build.0 = Debug|Win32
 		{B5D81A7A-FE9D-4FD3-9F34-BBDE1546CAF2}.Release|Win32.ActiveCfg = Release|Win32
 		{B5D81A7A-FE9D-4FD3-9F34-BBDE1546CAF2}.Release|Win32.Build.0 = Release|Win32
-		{C75D8F11-1CFC-4B9A-9E82-BDC25B96F1A3}.Debug|Win32.ActiveCfg = Debug|Win32
-		{C75D8F11-1CFC-4B9A-9E82-BDC25B96F1A3}.Debug|Win32.Build.0 = Debug|Win32
-		{C75D8F11-1CFC-4B9A-9E82-BDC25B96F1A3}.Release|Win32.ActiveCfg = Release|Win32
-		{C75D8F11-1CFC-4B9A-9E82-BDC25B96F1A3}.Release|Win32.Build.0 = Release|Win32
 		{A52E7931-CF2A-4B43-B903-A44A952EFC81}.Debug|Win32.ActiveCfg = Debug|Win32
 		{A52E7931-CF2A-4B43-B903-A44A952EFC81}.Debug|Win32.Build.0 = Debug|Win32
 		{A52E7931-CF2A-4B43-B903-A44A952EFC81}.Release|Win32.ActiveCfg = Release|Win32
