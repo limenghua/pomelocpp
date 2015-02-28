@@ -15,61 +15,10 @@
 #define new DEBUG_NEW
 #endif
 
-
+#include "DialogLogin.h"
+#include "tool.h"
 using namespace std::placeholders;
-CString UTF8ToUnicode( const char* str )
-{
- int  len = 0;
- len = strlen(str);
- int  unicodeLen = ::MultiByteToWideChar( CP_UTF8,
-            0,
-            str,
-            -1,
-            NULL,
-            0 ); 
- wchar_t *  pUnicode; 
- pUnicode = new  wchar_t[unicodeLen+1];
- memset(pUnicode,0,(unicodeLen+1)*sizeof(wchar_t)); 
- ::MultiByteToWideChar( CP_UTF8,
-         0,
-         str,
-         -1,
-         (LPWSTR)pUnicode,
-         unicodeLen ); 
- CString  rt;
- rt = ( wchar_t* )pUnicode;
- delete  pUnicode;
-   
- return  rt;
-}
-std::string UnicodeToUTF8( const CString& str )
-{  
 
-	char*     pElementText;
-	int    iTextLen;  // wide char to multi char  
-	iTextLen = WideCharToMultiByte( CP_UTF8,
-		0,
-		str,
-		-1,
-		NULL,
-		0,
-		NULL,
-		NULL );
-	pElementText = new char[iTextLen + 1];
-	memset( ( void* )pElementText, 0, sizeof( char ) * ( iTextLen + 1 ) );
-	::WideCharToMultiByte( CP_UTF8,
-		0,
-		str,
-		-1,
-		pElementText,
-		iTextLen,
-		NULL,
-		NULL );
-	std::string strText;
-	strText = pElementText;
-	delete[] pElementText;
-	return strText;
-}
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 class CAboutDlg : public CDialogEx
@@ -173,8 +122,28 @@ BOOL CChatDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	RegesterListeners();
 	m_userBox.SelectString(0,_T("all"));
-	PomeloLogin("limenghua","room");
 
+	CDialogLogin loginDlg;
+	INT_PTR nRes = loginDlg.DoModal();
+	if (nRes == IDOK)
+	{
+		// TODO: 在此放置处理何时用
+		//  “确定”来关闭对话框的代码
+		std::string room = UnicodeToUTF8(loginDlg.m_room);
+		std::string user = UnicodeToUTF8(loginDlg.m_user);
+		std::string ip   = UnicodeToUTF8(loginDlg.m_ip);
+
+		int res = thePomelo.Connect(ip.c_str(),3050);
+		if(res !=PC_RC_OK){
+			::AfxMessageBox(_T("连接服务器出错"));
+		}
+		PomeloLogin(user,room);
+	}
+	else if (nRes == IDCANCEL)
+	{
+		// TODO: 在此放置处理何时用
+		//  “取消”来关闭对话框的代码
+	}
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -242,7 +211,7 @@ void CChatDlg::OnBnClickedOk()
 	std::string to = UnicodeToUTF8(m_currTarget);
 	request["target"] = (to =="all") ? "*" : to;
 
-	theApp.pomelo.DoRequest(route,request.toStyledString().c_str(),
+	thePomelo.DoRequest(route,request.toStyledString().c_str(),
 		[](const pomelo::Request & req,int rc,const char * msg){
 			if(rc != PC_RC_OK){
 				::AfxMessageBox(_T("发送消息出错"));
@@ -260,19 +229,9 @@ void CChatDlg::PomeloLogin(std::string name,std::string rid)
 	Json::Value request;
 	request["username"] = name;
 	request["rid"] = rid;
-	theApp.pomelo.DoRequest(route,request.toStyledString().c_str(),
+	thePomelo.DoRequest(route,request.toStyledString().c_str(),
 		std::bind(&CChatDlg::InitUserList,this,_3)
 		);
-	/*
-		[](const pomelo::Request & req,int rc,const char * msg){
-			if(rc != PC_RC_OK){
-				::AfxMessageBox(_T("登陆房间出错"));
-			}
-			else{
-				InitUserList(msg);
-			}
-	});
-	*/
 }
 
 void CChatDlg::InitUserList(const char *data){
@@ -295,13 +254,13 @@ void CChatDlg::InitUserList(const char *data){
 
 void CChatDlg::RegesterListeners()
 {
-	theApp.pomelo.On("onChat",std::bind(&CChatDlg::OnChat,this,_1));
-	theApp.pomelo.On("onAdd",std::bind(&CChatDlg::OnAdd,this,_1));
-	theApp.pomelo.On("onLeave",std::bind(&CChatDlg::OnLeave,this,_1));
-	theApp.pomelo.On("disconnect",[](const char * msg){
+	thePomelo.On("onChat",std::bind(&CChatDlg::OnChat,this,_1));
+	thePomelo.On("onAdd",std::bind(&CChatDlg::OnAdd,this,_1));
+	thePomelo.On("onLeave",std::bind(&CChatDlg::OnLeave,this,_1));
+	thePomelo.On("disconnect",[](const char * msg){
 		::AfxMessageBox(_T("连接断开"));
 	});
-	theApp.pomelo.On("kicked",[](const char * msg){
+	thePomelo.On("kicked",[](const char * msg){
 		::AfxMessageBox(_T("服务器心跳数据回应"));
 	});
 }

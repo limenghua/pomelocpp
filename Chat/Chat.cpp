@@ -6,6 +6,8 @@
 #include "Chat.h"
 #include "ChatDlg.h"
 
+#include "tool.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -33,7 +35,7 @@ CChatApp::CChatApp()
 // 唯一的一个 CChatApp 对象
 
 CChatApp theApp;
-
+pomelo::Client thePomelo;
 
 // CChatApp 初始化
 
@@ -51,12 +53,9 @@ BOOL CChatApp::InitInstance()
 
 	CWinApp::InitInstance();
 	pomelo::LibInit();
-	pomelo.Initialize();
+	thePomelo.Initialize();
 
-	int res = pomelo.Connect("127.0.0.1",3050);
-	if(res !=PC_RC_OK){
-		::AfxMessageBox(_T("连接服务器出错"));
-	}
+
 
 	AfxEnableControlContainer();
 
@@ -76,16 +75,6 @@ BOOL CChatApp::InitInstance()
 	CChatDlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
-	if (nResponse == IDOK)
-	{
-		// TODO: 在此放置处理何时用
-		//  “确定”来关闭对话框的代码
-	}
-	else if (nResponse == IDCANCEL)
-	{
-		// TODO: 在此放置处理何时用
-		//  “取消”来关闭对话框的代码
-	}
 
 	// 删除上面创建的 shell 管理器。
 	if (pShellManager != NULL)
@@ -97,4 +86,3 @@ BOOL CChatApp::InitInstance()
 	//  而不是启动应用程序的消息泵。
 	return FALSE;
 }
-

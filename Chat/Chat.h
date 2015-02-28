@@ -19,7 +19,7 @@ class CChatApp : public CWinApp
 {
 public:
 	CChatApp();
-	pomelo::Client pomelo;
+
 // ÖØÐ´
 public:
 	virtual BOOL InitInstance();
@@ -30,3 +30,4 @@ public:
 };
 
 extern CChatApp theApp;
+extern	pomelo::Client thePomelo;
