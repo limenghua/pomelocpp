@@ -153,9 +153,10 @@ namespace pomelo
 		void RequestResponse(const Request & req,int rc,const char* msg);
 		void NotifyResponse(const Notify & notify,int rc);
 
-		int serialNumber;	
-		int NextSerialNumber()
+		
+		static long long NextSerialNumber()
 		{
+			static long long serialNumber =0;	
 			return serialNumber++;
 		}
 
