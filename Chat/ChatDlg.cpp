@@ -235,6 +235,10 @@ void CChatDlg::PomeloLogin(std::string name,std::string rid)
 }
 
 void CChatDlg::InitUserList(const char *data){
+
+	if(data == NULL){
+		return;
+	}
     Json::Reader reader;
     Json::Value root;
     if (!reader.parse(std::string(data), root, false))

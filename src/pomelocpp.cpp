@@ -19,7 +19,6 @@ void pomelo::LibClearUp()
 Client::Client()
 {
 	pc_client = (pc_client_t*)malloc(pc_client_size());
-	serialNumber =0;
 	timeout = TIMEOUT_DEFAULT;
 }
 Client::~Client()
